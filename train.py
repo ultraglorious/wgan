@@ -12,7 +12,7 @@ def train(model: Title2Cover,
           dataset_name: str):
 
     # Restore latest checkpoint
-    start_epoch = tf.constant(0)
+    start_epoch = tf.constant(1)
     if model.checkpoint_manager.latest_checkpoint:
         start_epoch = tf.cast(model.checkpoint.save_counter, dtype=tf.int32) * model.save_every_nth
         model.checkpoint.restore(model.checkpoint_manager.latest_checkpoint)
@@ -23,23 +23,29 @@ def train(model: Title2Cover,
     summary_writer = tf.summary.create_file_writer(os.path.join(log_dir, dataset_name, time))
 
     # Untrained images
-    plot(model.generator, sample_titles, -1, out_dir)
+    plot(model.generator, sample_titles, 0, out_dir)
 
-    for epoch in tf.range(start_epoch, n_epochs):
+    step = tf.constant(1, dtype=tf.dtypes.int64)
+
+    for epoch in tf.range(start_epoch, n_epochs+tf.constant(1)):
         start = tf.timestamp()
 
-        n = 0
         for titles, images in dataset:
-            model.train_step(titles, images, summary_writer, epoch)
-            if tf.math.equal(tf.math.floormod(n, 10), 0):
+            if tf.equal(tf.math.floormod(step, model.n_critic), 0):
+                # Every fifth batch, train both generator and discriminator/critic
+                model.train_step(titles, images, summary_writer, step)
+            else:
+                # Otherwise, train only the discriminator/critic
+                model.train_only_discriminator(titles, images, summary_writer, step)
+            if tf.math.equal(tf.math.floormod(step, 10), 0):
                 tf.print(".", end="")
-            n += 1
+            step += tf.constant(1, dtype=tf.dtypes.int64)
 
         # Using a consistent image (sample_x) so that the progress of the model is clearly visible.
         plot(model.generator, sample_titles, epoch, out_dir)
 
-        if tf.equal(tf.math.floormod(epoch + 1, model.save_every_nth), 0):
+        if tf.equal(tf.math.floormod(epoch, model.save_every_nth), 0):
             save_path = model.checkpoint_manager.save()
-            tf.print(f"Saving checkpoint for epoch {epoch + 1} at {save_path}")
+            tf.print(f"Saving checkpoint for epoch {epoch} at {save_path}")
         running_time = tf.timestamp() - start
-        tf.print(f"Time taken for epoch {epoch + 1} is {running_time:.1f} sec\n")
+        tf.print(f"Time taken for epoch {epoch} is {running_time:.1f} sec\n")

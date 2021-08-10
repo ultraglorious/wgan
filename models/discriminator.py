@@ -1,9 +1,10 @@
 import tensorflow as tf
-from layers import ConvolutionBlock
+from layers import ConvolutionBlock as ConvBlock
+import constraints
 
 
 def discriminator(image_shape: tf.TensorShape) -> tf.keras.Model:
-    return discriminator2(image_shape)
+    return wgan_critic(image_shape)
 
 
 def discriminator1(image_shape: tf.TensorShape) -> tf.keras.Model:
@@ -34,4 +35,21 @@ def discriminator2(image_shape: tf.TensorShape) -> tf.keras.Model:
     # Final convolution to produce 1D output (bs, res/8, res/8, 1)
     x = tf.keras.layers.Conv2D(kernel_size=kernel, strides=1, filters=1, padding="same", use_bias=False,
                                kernel_initializer=initializer)(x)
+    return tf.keras.Model(inputs=inputs, outputs=x)
+
+
+def wgan_critic(image_shape: tf.TensorShape) -> tf.keras.Model:
+    """Initialize WGAN critic model"""
+    ls = 0.2  # leaky slope
+    kernel = 4
+    initializer = tf.random_normal_initializer(0., 0.02)
+    cv = 0.01  # clip value
+    clip = constraints.ClipConstraint(cv)
+
+    inputs = tf.keras.layers.Input(shape=image_shape)
+    x = ConvBlock(kernel, 2, 64, normalize=True, dropout=False, leaky_slope=ls, clip_value=cv)(inputs)  # (bs, r/2, r/2, 64)
+    x = ConvBlock(kernel, 2, 128, normalize=True, dropout=False, leaky_slope=ls, clip_value=cv)(x)  # (bs, r/4, r/4, 128)
+    x = ConvBlock(kernel, 2, 256, normalize=True, dropout=False, leaky_slope=ls, clip_value=cv)(x)  # (bs, r/8, r/8, 256)
+    x = tf.keras.layers.Flatten()(x)
+    x = tf.keras.layers.Dense(units=1, activation="linear", kernel_initializer=initializer, kernel_constraint=clip)(x)  # (bs, 1)
     return tf.keras.Model(inputs=inputs, outputs=x)
