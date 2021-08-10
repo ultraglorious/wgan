@@ -1,5 +1,6 @@
 from typing import Optional
 import tensorflow as tf
+import constraints
 
 
 class ConvolutionBlock(tf.keras.layers.Layer):
@@ -12,6 +13,7 @@ class ConvolutionBlock(tf.keras.layers.Layer):
                  dropout: bool = False,
                  activation: str = "relu",
                  leaky_slope: Optional[float] = None,
+                 clip_value: Optional[float] = None,
                  *args, **kwargs):
         """
         Parameters
@@ -35,14 +37,21 @@ class ConvolutionBlock(tf.keras.layers.Layer):
             Slope of LeakyReLU layer.  This is the slope for x < 0.  Defaults to None.
         """
         super(ConvolutionBlock, self).__init__(*args, **kwargs)
-        initializer = tf.random_normal_initializer(0., 0.02)
+        initializer = tf.random_normal_initializer(mean=0., stddev=0.02)
+
+        if clip_value is not None:
+            constraint = constraints.ClipConstraint(clip_value)
+        else:
+            constraint = None
 
         if transpose:
             self.conv = tf.keras.layers.Conv2DTranspose(filters=n_filters, kernel_size=kernel_size, strides=stride,
-                                                        padding="same", kernel_initializer=initializer, use_bias=False)
+                                                        padding="same", use_bias=False,
+                                                        kernel_initializer=initializer, kernel_constraint=constraint)
         else:
             self.conv = tf.keras.layers.Conv2D(filters=n_filters, kernel_size=kernel_size, strides=stride,
-                                               padding="same", kernel_initializer=initializer, use_bias=False)
+                                               padding="same", use_bias=False,
+                                               kernel_initializer=initializer, kernel_constraint=constraint)
 
         self.norm = None
         if normalize:
@@ -50,7 +59,7 @@ class ConvolutionBlock(tf.keras.layers.Layer):
 
         self.dropout = None
         if dropout:
-            self.dropout = tf.keras.layers.Dropout(0.5)
+            self.dropout = tf.keras.layers.Dropout(0.3)
 
         if (activation == "relu") and (leaky_slope is not None):
             self.acti = tf.keras.layers.LeakyReLU(alpha=leaky_slope)
