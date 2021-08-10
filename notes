@@ -1,0 +1,22 @@
+Write dataset loader first
+For hints on loading a dataset from a folder of images look here:
+    https://www.tensorflow.org/tutorials/text/image_captioning#preprocess_the_images_using_inceptionv3
+
+
+----- Outline -----
+
+1. Tokenize book title
+2. Embed tokenized title (converts word indices to vectors)
+3. Feed this to an RNN (https://www.tensorflow.org/text/tutorials/text_classification_rnn#create_the_text_encoder)
+    But we will output a generated image rather than a sentiment verdict
+    The RNN generates the seed for the generated image (but not a 1 digit seed)
+    Look here for ideas on image generation (https://www.tensorflow.org/tutorials/generative/dcgan#the_generator)
+4. Now pass generated image to a discriminator
+
+
+----- Miscellaneous -----
+As of 2021.07.31, needed to use Numpy version 1.19.5 rather than the latest versions due to some compatibility issue
+between TensorFlow and later versions.  See:
+https://stackoverflow.com/questions/58479556/notimplementederror-cannot-convert-a-symbolic-tensor-2nd-target0-to-a-numpy
+https://github.com/tensorflow/tensorflow/issues/50353
+https://stackoverflow.com/questions/66141547/notimplementederror-cannot-convert-a-symbolic-tensor-to-a-numpy-array

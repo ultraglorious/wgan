@@ -1,0 +1,9 @@
+/.idea
+__pycache__
+*/__pycache__
+
+data/checkpoints
+data/covers
+data/log
+data/output
+obsolete/
