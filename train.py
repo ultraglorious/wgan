@@ -17,9 +17,13 @@ def train(model: Title2Cover,
         start_epoch = tf.cast(model.checkpoint.save_counter, dtype=tf.int32) * model.save_every_nth
         model.checkpoint.restore(model.checkpoint_manager.latest_checkpoint)
 
+    out_dir = os.path.join(os.getcwd(), "data", "output", dataset_name)
     log_dir = os.path.join(os.getcwd(), "data", "log")
     time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     summary_writer = tf.summary.create_file_writer(os.path.join(log_dir, dataset_name, time))
+
+    # Untrained images
+    plot(model.generator, sample_titles, -1, out_dir)
 
     for epoch in tf.range(start_epoch, n_epochs):
         start = tf.timestamp()
@@ -32,8 +36,7 @@ def train(model: Title2Cover,
             n += 1
 
         # Using a consistent image (sample_x) so that the progress of the model is clearly visible.
-        directory = os.path.join(os.getcwd(), "data", "output", dataset_name)
-        plot(model.generator, sample_titles, epoch, directory)
+        plot(model.generator, sample_titles, epoch, out_dir)
 
         if tf.equal(tf.math.floormod(epoch + 1, model.save_every_nth), 0):
             save_path = model.checkpoint_manager.save()

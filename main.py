@@ -20,8 +20,3 @@ if __name__ == "__main__":
     # gen = models.generator(train_ds, vocab_size)
     # plot(gen, sample_titles)
     # disc = models.discriminator(tf.TensorShape([224, 224, 3]))
-
-    # TODO: made some progress tonight.
-    #  Maybe try building up to larger numbers of filters next?
-    #  I think the discriminator needs to be improved now
-    #  I did accidentally not test any of the improvements I made to the generator though.  Could see what those tweaks did.
