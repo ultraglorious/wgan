@@ -1,10 +1,13 @@
 import tensorflow as tf
 import models
 import load
-from train import train
+
+from plot import plot
 
 
 def run_title2cover():
+    from train_t2c import train
+
     train_ds, test_ds = load.book30.load(batch_size=128, image_size=(56, 56), genre=24)
     vocab_size = 1000
     dataset_name = "book30-scifi"
@@ -18,8 +21,17 @@ def run_title2cover():
 
 
 def run_mnist():
-    train_ds = load.mnist.load(batch_size=128)
+    from train_digits import train
+
+    batch_size = 128
+    train_ds = load.mnist.load(batch_size=batch_size)
     dataset_name = "mnist-digits"
+    rand = tf.random.Generator.from_seed(0)
+    n_epochs = tf.constant(10)
+
+    wgan = models.mnist.WGAN(dataset_name=dataset_name)
+    sample = rand.normal(shape=(3, wgan.latent_dimensions))
+    train(wgan, train_ds, sample, n_epochs, dataset_name)
 
 
 if __name__ == "__main__":

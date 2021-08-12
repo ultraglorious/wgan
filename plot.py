@@ -35,7 +35,8 @@ def plot(generator: tf.keras.Model, test_input: tf.Tensor,
     for i in tf.range(n_images):
         ax1 = fig.add_subplot(gs[0, i])
         show_tensor(ax1, generator(tf.expand_dims(test_input[i], axis=0))[0])
-        ax1.set_title(test_input[i].numpy())
+        if type(test_input[i].numpy()) is str:
+            ax1.set_title(test_input[i].numpy())
         ax1.axis("off")
 
     if epoch is not None:
@@ -45,6 +46,6 @@ def plot(generator: tf.keras.Model, test_input: tf.Tensor,
         else:
             fp = filename
         plt.savefig(fp.format(epoch))
+        plt.close(fig)
     else:
         plt.show()
-    plt.close(fig)
