@@ -1,6 +1,6 @@
 from typing import Optional
 import tensorflow as tf
-import constraints
+from models.constraints import constraints
 
 
 class ConvolutionBlock(tf.keras.layers.Layer):

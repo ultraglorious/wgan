@@ -1,7 +1,7 @@
 import os
 import datetime
 import tensorflow as tf
-from models import Title2Cover
+from models.title2cover import Title2Cover
 from plot import plot
 
 
@@ -37,6 +37,7 @@ def train(model: Title2Cover,
             else:
                 # Otherwise, train only the discriminator/critic
                 model.train_only_discriminator(titles, images, summary_writer, step)
+
             if tf.math.equal(tf.math.floormod(step, 10), 0):
                 tf.print(".", end="")
             step += tf.constant(1, dtype=tf.dtypes.int64)
@@ -47,5 +48,6 @@ def train(model: Title2Cover,
         if tf.equal(tf.math.floormod(epoch, model.save_every_nth), 0):
             save_path = model.checkpoint_manager.save()
             tf.print(f"Saving checkpoint for epoch {epoch} at {save_path}")
+
         running_time = tf.timestamp() - start
         tf.print(f"Time taken for epoch {epoch} is {running_time:.1f} sec\n")

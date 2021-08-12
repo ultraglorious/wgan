@@ -5,7 +5,7 @@ import models
 
 class Title2Cover(tf.keras.Model):
 
-    """Model for taking book titles and generating covers."""
+    """WGAN for taking book titles and generating covers."""
 
     # Optimizer parameters
     gen_learning_rate = 5e-5
@@ -28,8 +28,8 @@ class Title2Cover(tf.keras.Model):
         """Initialize generator and discriminator"""
         # This line causes a warning to come up saying the partially cached data will be discarded.
         batch = next(iter(train_ds))
-        self.generator = models.generator(train_ds, vocabulary_size)
-        self.discriminator = models.discriminator(batch[1].shape[1:])
+        self.generator = models.title2cover.generator(train_ds, vocabulary_size)
+        self.discriminator = models.title2cover.discriminator(batch[1].shape[1:])
 
         """"Set up optimizers"""
         self.generator_optimizer = tf.keras.optimizers.RMSprop(learning_rate=self.gen_learning_rate)
@@ -78,7 +78,7 @@ class Title2Cover(tf.keras.Model):
         Discriminator wants to get better at detecting that the real image is real, and that generated images are not.
         Softens labels.  Supposed to improve training.
         """
-        return tf.reduce_mean(disc_real) - tf.reduce_mean(disc_generated)
+        return tf.constant(-1.) * tf.reduce_mean(disc_real) + tf.reduce_mean(disc_generated)
 
     @staticmethod
     def generator_loss(disc_generated: tf.Tensor) -> tf.Tensor:

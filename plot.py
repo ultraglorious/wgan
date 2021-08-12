@@ -7,7 +7,9 @@ from matplotlib.gridspec import GridSpec
 
 
 def show_tensor(axis: plt.Axes, t: tf.Tensor):
-    axis.imshow((t - tf.reduce_min(t)) / (tf.reduce_max(t) - tf.reduce_min(t)))
+    t_min = tf.reduce_min(t)
+    t_max = tf.reduce_max(t)
+    axis.imshow((t - t_min) / (t_max - t_min))
 
 
 def plot(generator: tf.keras.Model, test_input: tf.Tensor,
@@ -45,3 +47,4 @@ def plot(generator: tf.keras.Model, test_input: tf.Tensor,
         plt.savefig(fp.format(epoch))
     else:
         plt.show()
+    plt.close(fig)

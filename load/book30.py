@@ -37,7 +37,7 @@ def load_csv(filename: str, genre: Optional[int] = None) -> Tuple[List[str], Lis
     }
     column_names = list(columns.keys())
 
-    data_fp = os.path.join(os.getcwd(), "data")
+    data_fp = os.path.join(os.getcwd(), "../data")
     fp = os.path.join(data_fp, filename)
     df = pd.read_csv(fp, names=column_names, dtype=columns, encoding="utf-8", encoding_errors="ignore")
 
@@ -100,7 +100,7 @@ def make_dataset(image_fp: List[str], titles: List[str], im_size: Tuple[int, int
         TensorFlow dataset.
     """
     buffer_size = 1000
-    cache_fn = os.path.join(os.getcwd(), "data", "cache")
+    cache_fn = os.path.join(os.getcwd(), "../data", "cache")
 
     dataset = tf.data.Dataset.from_tensor_slices((titles, image_fp))
     dataset = dataset.map(lambda title, fp: (title, read_image(fp, im_size)), num_parallel_calls=tf.data.AUTOTUNE)
@@ -109,7 +109,7 @@ def make_dataset(image_fp: List[str], titles: List[str], im_size: Tuple[int, int
     return dataset
 
 
-def load_book30(batch_size: int = 64, image_size: Tuple[int, int] = (224, 224), genre: Optional[int] = None)\
+def load(batch_size: int = 64, image_size: Tuple[int, int] = (224, 224), genre: Optional[int] = None)\
         -> Tuple[tf.data.Dataset, tf.data.Dataset]:
     """
     Loads Book30 train and test datasets.  Desired values for the Book30 dataset are the default values.
