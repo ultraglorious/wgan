@@ -57,14 +57,14 @@ class ConvolutionBlock(tf.keras.layers.Layer):
         if normalize:
             self.norm = tf.keras.layers.BatchNormalization()
 
-        self.dropout = None
-        if dropout:
-            self.dropout = tf.keras.layers.Dropout(0.3)
-
         if (activation == "relu") and (leaky_slope is not None):
             self.acti = tf.keras.layers.LeakyReLU(alpha=leaky_slope)
         else:
             self.acti = tf.keras.layers.Activation(activation=activation)
+
+        self.dropout = None
+        if dropout:
+            self.dropout = tf.keras.layers.Dropout(0.3)
 
     def call(self, inputs: tf.Tensor):
         x = inputs
