@@ -33,10 +33,9 @@ def train(model: WGAN,
         for titles, images in dataset:
             if tf.equal(tf.math.floormod(step, model.n_critic), 0):
                 # Every fifth batch, train both generator and discriminator/critic
-                model.train_step(images, summary_writer, step)
-            else:
-                # Otherwise, train only the discriminator/critic
-                model.train_only_discriminator(images, summary_writer, step)
+                model.train_generator(images, summary_writer, step)
+            # Otherwise, train only the discriminator/critic
+            model.train_discriminator(images, summary_writer, step)
 
             if tf.math.equal(tf.math.floormod(step, 10), 0):
                 tf.print(".", end="")
