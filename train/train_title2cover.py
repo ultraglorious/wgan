@@ -17,8 +17,8 @@ def train(model: Title2Cover,
         start_epoch = tf.cast(model.checkpoint.save_counter, dtype=tf.int32) * model.save_every_nth
         model.checkpoint.restore(model.checkpoint_manager.latest_checkpoint)
 
-    out_dir = os.path.join(os.getcwd(), "data", "output", dataset_name)
-    log_dir = os.path.join(os.getcwd(), "data", "log")
+    out_dir = os.path.join(os.getcwd(), "../data", "output", dataset_name)
+    log_dir = os.path.join(os.getcwd(), "../data", "log")
     time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     summary_writer = tf.summary.create_file_writer(os.path.join(log_dir, dataset_name, time))
 
