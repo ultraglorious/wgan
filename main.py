@@ -2,8 +2,6 @@ import tensorflow as tf
 import models
 import load
 
-from plot import plot
-
 
 def run_title2cover():
     from train_t2c import train
@@ -27,10 +25,10 @@ def run_mnist():
     train_ds = load.mnist.load(batch_size=batch_size)
     dataset_name = "mnist-digits"
     rand = tf.random.Generator.from_seed(0)
-    n_epochs = tf.constant(10)
+    n_epochs = tf.constant(20)
 
     wgan = models.mnist.WGAN(dataset_name=dataset_name)
-    sample = rand.normal(shape=(3, wgan.latent_dimensions))
+    sample = rand.normal(shape=(5, wgan.latent_dimensions))
     train(wgan, train_ds, sample, n_epochs, dataset_name)
 
 

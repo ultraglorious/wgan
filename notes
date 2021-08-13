@@ -20,3 +20,13 @@ between TensorFlow and later versions.  See:
 https://stackoverflow.com/questions/58479556/notimplementederror-cannot-convert-a-symbolic-tensor-2nd-target0-to-a-numpy
 https://github.com/tensorflow/tensorflow/issues/50353
 https://stackoverflow.com/questions/66141547/notimplementederror-cannot-convert-a-symbolic-tensor-to-a-numpy-array
+
+
+----- MNIST Digit WGAN Log Notes -----
+20210812-164023 -- Initial run
+20210812-175157 -- Added batch normalization to generator convolution blocks
+20210812-193513 -- Added final, 1-stride ConvBlock layer to Discriminator.  Filters now go 32-64-128
+20210812-195207 -- Changed all ConvBlocks in the discriminator to 128 filter
+20210813-133415 -- Ran for 20 epochs.  Discriminator training seemed to be going okay, but the image quality is poor.
+20210813-135426 - Added GaussianNoise layer to Discriminator.  Went to G-(5-1-128)-(5-2-64)-(5-2-1), D-(5-2-64)-(5-2-128)
+20210813-152023 - Implemented gradient penalty method. Removed weight clipping, changed to Adam optimizer, removed normalization from Discriminator
