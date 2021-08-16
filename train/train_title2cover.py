@@ -1,11 +1,11 @@
 import os
 import datetime
 import tensorflow as tf
-from models.title2cover import Title2Cover
+from models.title2cover import WGAN
 from plot import plot
 
 
-def train(model: Title2Cover,
+def train(model: WGAN,
           dataset: tf.data.Dataset,
           sample_titles: tf.Tensor,
           n_epochs: tf.Tensor,
@@ -17,8 +17,8 @@ def train(model: Title2Cover,
         start_epoch = tf.cast(model.checkpoint.save_counter, dtype=tf.int32) * model.save_every_nth
         model.checkpoint.restore(model.checkpoint_manager.latest_checkpoint)
 
-    out_dir = os.path.join(os.getcwd(), "../data", "output", dataset_name)
-    log_dir = os.path.join(os.getcwd(), "../data", "log")
+    out_dir = os.path.join(os.getcwd(), "data", "output", dataset_name)
+    log_dir = os.path.join(os.getcwd(), "data", "log")
     time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     summary_writer = tf.summary.create_file_writer(os.path.join(log_dir, dataset_name, time))
 
@@ -33,10 +33,9 @@ def train(model: Title2Cover,
         for titles, images in dataset:
             if tf.equal(tf.math.floormod(step, model.n_critic), 0):
                 # Every fifth batch, train both generator and discriminator/critic
-                model.train_step(titles, images, summary_writer, step)
-            else:
-                # Otherwise, train only the discriminator/critic
-                model.train_only_discriminator(titles, images, summary_writer, step)
+                model.train_generator(titles, images, summary_writer, step)
+            # Always train the discriminator/critic
+            model.train_discriminator(titles, images, summary_writer, step)
 
             if tf.math.equal(tf.math.floormod(step, 10), 0):
                 tf.print(".", end="")

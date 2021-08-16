@@ -33,13 +33,13 @@ def generator(train_ds: tf.data.Dataset, vocabulary_size: int) -> tf.keras.Model
     # x = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(n_embedding, return_sequences=True))(x)
     x = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(n_embedding))(x)
 
-    x = tf.keras.layers.Dense(7 * 7 * 1, use_bias=False, kernel_initializer=initializer)(x)
-    x = tf.keras.layers.Reshape((7, 7, 1))(x)
+    x = tf.keras.layers.Dense(7 * 7 * 256, use_bias=False, kernel_initializer=initializer)(x)
+    x = tf.keras.layers.Reshape((7, 7, 256))(x)
 
-    x = ConvBlock(5, 2, 256, transpose=True, normalize=False, dropout=True, leaky_slope=ls)(x)  # 14, 14, 256
-    x = ConvBlock(5, 2, 128, transpose=True, normalize=False, dropout=True, leaky_slope=ls)(x)  # 28, 28, 128
-    x = ConvBlock(5, 2, 64, transpose=True, normalize=False, dropout=True, leaky_slope=ls)(x)  # 56, 56, 64
-    x = ConvBlock(5, 1, 3, transpose=True, normalize=False, dropout=True, activation="tanh")(x)  # 56, 56, 3
+    x = ConvBlock(5, 1, 256, transpose=True, normalize=True, dropout=True, leaky_slope=ls)(x)  # 7, 7, 256
+    x = ConvBlock(5, 2, 128, transpose=True, normalize=True, dropout=True, leaky_slope=ls)(x)  # 14, 14, 128
+    x = ConvBlock(5, 2, 64, transpose=True, normalize=True, dropout=True, leaky_slope=ls)(x)  # 25, 28, 64
+    x = ConvBlock(5, 2, 3, transpose=True, normalize=True, dropout=True, activation="tanh")(x)  # 56, 56, 3
 
     return tf.keras.Model(inputs=inputs, outputs=x)
 

@@ -37,7 +37,7 @@ def load_csv(filename: str, genre: Optional[int] = None) -> Tuple[List[str], Lis
     }
     column_names = list(columns.keys())
 
-    data_fp = os.path.join(os.getcwd(), "../data")
+    data_fp = os.path.join(os.getcwd(), "data")
     fp = os.path.join(data_fp, filename)
     df = pd.read_csv(fp, names=column_names, dtype=columns, encoding="utf-8", encoding_errors="ignore")
 

@@ -14,7 +14,7 @@ def run_title2cover():
 
     # tf.config.run_functions_eagerly(True)
 
-    t2c = models.title2cover.Title2Cover(train_ds, vocab_size, dataset_name, restore_checkpoint=True)
+    t2c = models.title2cover.WGAN(train_ds, vocab_size, dataset_name, restore_checkpoint=True)
     train.t2c(t2c, train_ds, sample_titles, n_epochs, dataset_name)
 
 
@@ -31,4 +31,4 @@ def run_mnist():
 
 
 if __name__ == "__main__":
-    run_mnist()
+    run_title2cover()

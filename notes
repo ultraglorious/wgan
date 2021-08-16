@@ -30,3 +30,7 @@ https://stackoverflow.com/questions/66141547/notimplementederror-cannot-convert-
 20210813-133415 -- Ran for 20 epochs.  Discriminator training seemed to be going okay, but the image quality is poor.
 20210813-135426 - Added GaussianNoise layer to Discriminator.  Went to G-(5-1-128)-(5-2-64)-(5-2-1), D-(5-2-64)-(5-2-128)
 20210813-152023 - Implemented gradient penalty method. Removed weight clipping, changed to Adam optimizer, removed normalization from Discriminator
+
+----- Book title-to-cover WGAN Log Notes -----
+20210816-112821 -- Initial run of title2cover using WGAN with gradient penalty (20 epochs)
+20210816-114817 -- Same as above, but and additional 30 epochs.  The images looked bad but the metrics looked good I think.
