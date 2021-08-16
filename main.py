@@ -6,10 +6,10 @@ import train
 
 def run_title2cover():
 
-    train_ds, test_ds = load.book30.load(batch_size=128, image_size=(56, 56), genre=24)
-    vocab_size = 1000
-    dataset_name = "book30-scifi"
-    n_epochs = tf.constant(50)
+    train_ds, test_ds = load.book30.load(batch_size=128, image_size=(56, 56), genre=None)
+    vocab_size = 2000  # was using 1000 for scifi (genre=24)
+    dataset_name = "book30"
+    n_epochs = tf.constant(200)
     sample_titles = tf.constant(["Daughter of Darkness", "The Lord of the Rings", "Pushing Ice"])
 
     # tf.config.run_functions_eagerly(True)

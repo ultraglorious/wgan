@@ -34,3 +34,4 @@ https://stackoverflow.com/questions/66141547/notimplementederror-cannot-convert-
 ----- Book title-to-cover WGAN Log Notes -----
 20210816-112821 -- Initial run of title2cover using WGAN with gradient penalty (20 epochs)
 20210816-114817 -- Same as above, but and additional 30 epochs.  The images looked bad but the metrics looked good I think.
+20210816-123003 -- Same, but for 200 epochs total now.  The generated images are diverging now, but are not great.  The discriminator is too good.  I think the titles are not useful enough for generating images.
